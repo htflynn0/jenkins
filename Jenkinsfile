@@ -10,7 +10,7 @@ pipeline {
 	stages {
 		stage('Verify Docker') {
 			steps {
-				bat 'docker info'  // Changed from 'sh' to 'bat' for Windows
+				sh 'docker info'  // Changed from 'sh' to 'bat' for Windows
 			}
 		}
 		
