@@ -67,9 +67,8 @@ pipeline{
 				// dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				script{
 
-					docker.withServer('unix:///var/run/docker.sock') {
     				dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
-					}	
+					
 				}
 			}
 		}
