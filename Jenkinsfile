@@ -1,30 +1,23 @@
-pipeline{
+pipeline {
 	agent any 
-	environment{
+	environment {
 		DOCKER_HOST = "tcp://localhost:2375"
 		dockerHome = tool "myDocker"
 		mavenHome = tool "myMaven"
 		PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
 	}
-	// agent {
-	// 	// docker{
-	// 	// 	image 'maven:3.6.3'
-	// 	// }
-	// 	docker{
-	// 		image 'node:21.7'
-	// 	}
-	// }
-	stage('Verify Docker') {
-    steps {
-        sh 'docker info'
-    }
-}
 
-	stages{
-		stage('Build'){
-			steps{
-				sh 'mvn --version'
-				sh 'docker --version'
+	stages {
+		stage('Verify Docker') {
+			steps {
+				bat 'docker info'  // Changed from 'sh' to 'bat' for Windows
+			}
+		}
+		
+		stage('Build') {
+			steps {
+				bat 'mvn --version'
+				bat 'docker --version'
 				echo 'Build'
 				echo "Path: $PATH"
 				echo "Build Number: $env.BUILD_NUMBER"
@@ -33,65 +26,65 @@ pipeline{
 				echo "Build URL: $env.BUILD_URL"
 				echo "Job name: $env.JOB_NAME"
 			}
-			post{
-				always{
+			post {
+				always {
 					echo 'I run at the end of the build stage'
 				}
 			}
 		}
-		stage('Compile'){
-			steps{
-				sh "mvn clean compile"
+
+		stage('Compile') {
+			steps {
+				bat "mvn clean compile"
 			}
 		}
-		stage('Test'){
-			steps{
+
+		stage('Test') {
+			steps {
 				echo 'mvn test'
 			}
 		}
-		stage('Intergration Test'){
-			steps{
-				echo 'Intergration Test'
-			}
-		}
-		stage('Package'){
-			steps{
-				sh "mvn package -DskipTests"
-			}
-		}
-		stage('Build docker image'){
-			steps{
-				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
-				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
-				// set DOCKER_HOST="tcp://localhost:2375"
-				// dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
-				script{
 
-    				dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
-					
+		stage('Integration Test') {
+			steps {
+				echo 'Integration Test'
+			}
+		}
+
+		stage('Package') {
+			steps {
+				bat "mvn package -DskipTests"
+			}
+		}
+
+		stage('Build docker image') {
+			steps {
+				script {
+					dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				}
 			}
 		}
-		stage('Push docker image'){
-			steps{
-				script{
-					docker.withRegistry('', 'dockerhub'){
+
+		stage('Push docker image') {
+			steps {
+				script {
+					docker.withRegistry('', 'dockerhub') {
 						dockerImage.push()
 						dockerImage.push('latest')
 					}
-					
 				}
 			}
 		}
 	}
+
 	post {
-		always{
+		always {
 			echo 'I always run'
 		}
-		success{
+		success {
 			echo 'I run when successful'
 		}
-		failure{
+		failure {
 			echo 'I run when failed'
 		}
 	}
