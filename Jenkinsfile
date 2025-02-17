@@ -16,7 +16,7 @@ pipeline{
 	stages{
 		stage('Build'){
 			steps{
-				sh 'maven --version'
+				sh 'mvn --version'
 				sh 'docker --version'
 				echo 'Build'
 				echo "Path: $PATH"
@@ -45,6 +45,30 @@ pipeline{
 		stage('Intergration Test'){
 			steps{
 				echo 'Intergration Test'
+			}
+		}
+		stage('Package'){
+			steps{
+				sh "mvn package -DskippTests"
+			}
+		}
+		stage('Build docker image'){
+			steps{
+				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
+				script{
+					dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
+				}
+			}
+		}
+		stage('Push docker image'){
+			steps{
+				script{
+					docker.withRegistry('', 'dockerhub'){
+						dockerImage.push()
+						dockerImage.push('latest')
+					}
+					
+				}
 			}
 		}
 	}
