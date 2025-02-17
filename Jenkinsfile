@@ -1,6 +1,7 @@
 pipeline{
 	agent any 
 	environment{
+		DOCKER_HOST = "tcp://localhost:2375"
 		dockerHome = tool "myDocker"
 		mavenHome = tool "myMaven"
 		PATH = "$dockerHome/bin:$mavenHome/bin:$PATH"
@@ -59,6 +60,9 @@ pipeline{
 				// set DOCKER_HOST="tcp://localhost:2375"
 				// dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				script{
+					sudo systemctl status docker
+					sudo systemctl start docker
+
 					docker.withServer('unix:///var/run/docker.sock') {
     				dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 					}	
