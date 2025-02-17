@@ -32,9 +32,14 @@ pipeline{
 				}
 			}
 		}
+		stage('Complie'){
+			steps{
+				sh "mvn-clean complie"
+			}
+		}
 		stage('Test'){
 			steps{
-				echo 'Test'
+				echo 'mvn test'
 			}
 		}
 		stage('Intergration Test'){
