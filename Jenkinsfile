@@ -34,7 +34,7 @@ pipeline{
 		}
 		stage('Complie'){
 			steps{
-				sh "mvn-clean complie"
+				sh "mvn clean complie"
 			}
 		}
 		stage('Test'){
