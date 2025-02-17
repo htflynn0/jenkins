@@ -57,8 +57,7 @@ pipeline{
 				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
 				script{
 					// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
-					set DOCKER_HOST=tcp://localhost:2375
-
+					set DOCKER_HOST=tcp:localhost:2375
 					dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				}
 			}
