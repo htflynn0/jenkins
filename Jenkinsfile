@@ -56,7 +56,8 @@ pipeline{
 			steps{
 				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
 				script{
-					dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
+					docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
+					// dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				}
 			}
 		}
