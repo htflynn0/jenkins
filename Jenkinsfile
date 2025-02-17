@@ -59,11 +59,9 @@ pipeline{
 				// set DOCKER_HOST="tcp://localhost:2375"
 				// dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				script{
-					// docker.withServer('unix:///var/run/docker.sock') {
+					docker.withServer('unix:///var/run/docker.sock') {
     				dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
-				}
-
-					
+					}	
 				}
 			}
 		}
