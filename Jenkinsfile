@@ -32,7 +32,7 @@ pipeline{
 				}
 			}
 		}
-		stage('Complie'){
+		stage('Compile'){
 			steps{
 				sh "mvn clean compile"
 			}
@@ -49,7 +49,7 @@ pipeline{
 		}
 		stage('Package'){
 			steps{
-				sh "mvn package -DskippTests"
+				sh "mvn package -DskipTests"
 			}
 		}
 		stage('Build docker image'){
@@ -57,9 +57,13 @@ pipeline{
 				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
 				// docker build -t htflynn/currency-exchange-devops:$env.BUILD_TAG
 				// set DOCKER_HOST="tcp://localhost:2375"
+				// dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				script{
+					// docker.withServer('unix:///var/run/docker.sock') {
+    				dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
+				}
+
 					
-					dockerImage = docker.build("htflynn/currency-exchange-devops:${env.BUILD_TAG}")
 				}
 			}
 		}
